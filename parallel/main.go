@@ -17,26 +17,24 @@ func main() {
 	log.Print("started.")
 	start := time.Now()
 
-	sleep1_finished := make(chan bool)
-	sleep2_finished := make(chan bool)
-	sleep3_finished := make(chan bool)
+	finished := make(chan bool)
 
 	go func() {
 		timeout(1)
-		sleep1_finished <- true
+		finished <- true
 	}()
 	go func() {
 		timeout(2)
-		sleep2_finished <- true
+		finished <- true
 	}()
 	go func() {
 		timeout(3)
-		sleep3_finished <- true
+		finished <- true
 	}()
 
-	<- sleep1_finished
-	<- sleep2_finished
-	<- sleep3_finished
+	<- finished
+	<- finished
+	<- finished
 
 	log.Print("all finished.")
 	end := time.Now()
