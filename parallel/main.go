@@ -19,22 +19,28 @@ func main() {
 
 	finished := make(chan bool)
 
-	go func() {
-		timeout(1)
-		finished <- true
-	}()
-	go func() {
-		timeout(2)
-		finished <- true
-	}()
-	go func() {
-		timeout(3)
-		finished <- true
-	}()
+	funcs := []func(){
+		func() {
+			timeout(1)
+			finished <- true
+		},
+		func() {
+			timeout(2)
+			finished <- true
+		},
+		func() {
+			timeout(3)
+			finished <- true
+		},
+	}
 
-	<- finished
-	<- finished
-	<- finished
+	for _, sleep := range funcs {
+		go sleep()
+	}
+
+	for i := 1; i <= len(funcs); i++ {
+		<- finished
+	}
 
 	log.Print("all finished.")
 	end := time.Now()
